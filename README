@@ -1,0 +1,3 @@
+This app implements directed acyclic graphs for Django, with an API that will be very familiar to people who've used Treebeard before.
+
+Works for me, but has no unit tests and will not see any improvements from me anytime soon. Just putting it out there in case it might be a useful starting point for somebody else.

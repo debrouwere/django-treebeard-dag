@@ -1,0 +1,21 @@
+Metadata-Version: 1.0
+Name: django-treebeard-dag
+Version: 0.2
+Summary: Directed acyclic graphs in Django.
+Home-page: http://stdbrouw.github.com/django-treebeard-dag/
+Author: Stijn Debrouwere
+Author-email: UNKNOWN
+License: Apache
+Download-URL: http://www.github.com/stdbrouw/django-treebeard-dag/tarball/master
+Description: UNKNOWN
+Keywords: graphs dag
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Software Development :: Libraries :: Python Modules
+Classifier: Topic :: Utilities
