@@ -1,0 +1,42 @@
+Discussion: a true DAG can very well be between different node types (e.g. an article is related
+to an organisation). The edge_model provides the necessary gearworks for this, but 
+I don't think AL_NodeBase can handle it at this point.
+
+The parent/child terminology is suitable for DAGs, but not for Directed Graphs that can allow cycles.
+
+If we wanted to implement true DGs, a few steps should be taken: 
+- AL_MemberBase (currently AL_NodeBase) should provide a parent/child-centric wrapper around 
+  more generic methods in AL_NodeBase, likewise for Edge
+
+  parent        director predecessor
+  ancestor      predecessor
+  child         direct successor
+  descendants   successors
+  
+  child         tail
+  parent        head
+  
+  tree          tree
+  root          source
+  leaf          sink
+  flat branches => decomposition into parts
+  
+  free          isolated
+
+- AL_NodeBase should be able to account for multiple relations, e.g. a node can be "siblings" with
+  other nodes for a certain relation (say, they're about the same topic) but not for another relation
+  (they're from different writers)
+
+This might be a step-up from just using Django's ManyToManyFields as it would have a lot more
+convenience methods for traversing relations than the plain Django ORM. However, it is not yet evident 
+exactly how useful this would be. In addition, it would prohibit aligning this code with Treebeard
+as Treebeard is very clearly focused on hierarchies, that is, relationships between nodes of 
+the same type.
+
+However, should I want to try this out, it's import to note that switching existing relations
+to this system is minimally invasive. The code would mainly just provide a bunch of convenience methods 
+and its data structure doesn't differ at all from plain m2ms in Django.
+
+Conclusion: 
+1. This app should be able to accomodate relationships between different models but doesn't.
+2. DAG's are a very special subset of DG's. Supporting true DG's would require further abstraction.

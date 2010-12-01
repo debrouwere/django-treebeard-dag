@@ -2,51 +2,6 @@
 
 from django.db import models
 
-"""
-Discussion: a true DAG can very well be between different node types (e.g. an article is related
-to an organisation). The edge_model provides the necessary gearworks for this, but 
-I don't think AL_NodeBase can handle it at this point.
-
-The parent/child terminology is suitable for DAGs, but not for Directed Graphs that can allow cycles.
-
-If we wanted to implement true DGs, a few steps should be taken: 
-- AL_MemberBase (currently AL_NodeBase) should provide a parent/child-centric wrapper around 
-  more generic methods in AL_NodeBase, likewise for Edge
-
-  parent        director predecessor
-  ancestor      predecessor
-  child         direct successor
-  descendants   successors
-  
-  child         tail
-  parent        head
-  
-  tree          tree
-  root          source
-  leaf          sink
-  flat branches => decomposition into parts
-  
-  free          isolated
-
-- AL_NodeBase should be able to account for multiple relations, e.g. a node can be "siblings" with
-  other nodes for a certain relation (say, they're about the same topic) but not for another relation
-  (they're from different writers)
-
-This might be a step-up from just using Django's ManyToManyFields as it would have a lot more
-convenience methods for traversing relations than the plain Django ORM. However, it is not yet evident 
-exactly how useful this would be. In addition, it would prohibit aligning this code with Treebeard
-as Treebeard is very clearly focused on hierarchies, that is, relationships between nodes of 
-the same type.
-
-However, should I want to try this out, it's import to note that switching existing relations
-to this system is minimally invasive. The code would mainly just provide a bunch of convenience methods 
-and its data structure doesn't differ at all from plain m2ms in Django.
-
-Conclusion: 
-1. This app should be able to accomodate relationships between different models but doesn't.
-2. DAG's are a very special subset of DG's. Supporting true DG's would require further abstraction. 
-"""
-
 def edge_factory(child_model, parent_model, child_to_field="id", parent_to_field="id", concrete=True):
     class Edge(models.Model):
         class Meta:
@@ -77,7 +32,8 @@ class AL_NodeBase(object):
     def delete(self, *vargs, **kwargs):
         # TODO: handle deletion of child nodes, 
         # but only if they have no other parents
-        # (optionally with a kwarg, delete all children regardless of other parents)
+        # (optionally with a keyword argument to force-delete all children
+        # regardless of whether they have any other parents)
         return super(self.__class__, self).delete(*vargs, **kwargs)
     """
     
@@ -116,8 +72,7 @@ class AL_NodeBase(object):
 
     
     def get_children(self):
-        # URGENT TODO: XX_SET needs to change
-        return self.thema_set.all()    
+        return self.child_field.all()    
     
     def get_children_count(self):
         return self.get_children().count()
@@ -205,8 +160,7 @@ class AL_NodeBase(object):
             return False
     
     def is_leaf(self):
-        ## URGENT TODO: XX_SET needs to change
-        if not self.thema_set.count():
+        if not self.get_children().count():
             return True
         else:
             return False
@@ -236,7 +190,7 @@ class AL_NodeBase(object):
     
     @classmethod
     def find_problems(cls):
-        # bv. cycli
+        # e.g. cyclical graphs
         raise NotImplementedError
         
     @classmethod
@@ -252,7 +206,7 @@ class AL_NodeBase(object):
 """
 Django's ORM is somewhat magical. We can't monkeypatch AL_Node
 (e.g. do stuff like AL_Node.parents = models.ManyToManyField(...))
-so we've put all functionality in a base class, and use a factory
+so we have put all functionality in a base class, and use a factory
 to fill in the details of the Node model.
 """
 

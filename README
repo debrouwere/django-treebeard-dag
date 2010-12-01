@@ -1,3 +1,10 @@
-This app implements directed acyclic graphs for Django, with an API that will be very familiar to people who've used Treebeard before.
+This app implements directed acyclic graphs for Django, with an API that will be 
+very familiar to people who've used Gustavo Picon's efficient tree implementations 
+in django-treebeard before.
 
-Works for me, but has no unit tests and will not see any improvements from me anytime soon. Just putting it out there in case it might be a useful starting point for somebody else.
+Works for me, but has no unit tests and may not see any improvements from me anytime 
+soon. Just putting it out there in case it might be a useful starting point for 
+somebody else.
+
+django-treebeard-dag comes with a simplified BSD license, a very liberal license. 
+See the included LICENSE file for details.
