@@ -21,6 +21,6 @@ setup(name='django-treebeard-dag',
       author_email='stijn@stdout.be',
       url='http://stdbrouw.github.com/django-treebeard-dag/',
       download_url='http://www.github.com/stdbrouw/django-treebeard-dag/tarball/master',
-      license='MIT',
+      license='BSD',
       packages=find_packages(),
       )
