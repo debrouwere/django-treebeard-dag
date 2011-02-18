@@ -1,19 +1,49 @@
 # encoding: utf-8
 
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
-def edge_factory(child_model, parent_model, child_to_field="id", parent_to_field="id", concrete=True):
+def edge_factory(parent_model, child_model,
+        parent_to_field="id", child_to_field="id", 
+        concrete=True):
+    
     class Edge(models.Model):
         class Meta:
             abstract = not concrete
-        
-        child = models.ForeignKey(child_model, related_name="%s_%s_parent" % (child_model, parent_model), to_field=child_to_field)
-        parent = models.ForeignKey(parent_model, related_name="%s_%s_child" % (child_model, parent_model), to_field=parent_to_field)
-        
+
+        parent = models.ForeignKey(parent_model,
+            related_name="%s_%s_child" % (child_model, parent_model), to_field=parent_to_field)
+        child = models.ForeignKey(child_model,
+            related_name="%s_%s_parent" % (child_model, parent_model), to_field=child_to_field)
+
         def __unicode__(self):
-            return "%s is related to %s" % (self.child, self.parent) 
+            return "%s points to %s" % (self.parent, self.child) 
 
     return Edge
+
+# this is not in use yet, just an experiment
+def generic_edge_factory(parent_model, child_model, 
+        parent_id_field=models.PositiveIntegerField(), child_id_field=models.PositiveIntegerField(), 
+        concrete=True):
+    
+    class Edge(models.Model):
+        class Meta:
+            abstract = not concrete
+
+        parent_type = models.ForeignKey(ContentType)
+        parent_id = parent_id_field
+        parent = models.GenericForeignKey('parent_type', 'parent_id')
+    
+        child_type = models.ForeignKey(ContentType)
+        child_id = child_id_field
+        child = models.GenericForeignKey('child_type', 'child_id')
+        
+        def __unicode__(self):
+            return "%s points to %s" % (self.parent, self.child) 
+
+    return Edge
+
 
 class AL_NodeBase(object):
     @classmethod
