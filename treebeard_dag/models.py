@@ -52,11 +52,11 @@ class AL_NodeBase(object):
 
     @classmethod
     def add_child(cls, **kwargs):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     @classmethod
     def add_sibling(cls, pos=None, **kwargs):
-        raise NotImplementedError
+        raise NotImplementedError()
 
     """
     def delete(self, *vargs, **kwargs):
@@ -178,7 +178,7 @@ class AL_NodeBase(object):
         
     def is_descendant_of(self, node):
         # TODO: this method requires a flat representation of all descendants to search through
-        raise NotImplementedError
+        raise NotImplementedError()
         
     def is_sibling_of(self, node):
         return self in node.get_siblings()
@@ -196,7 +196,7 @@ class AL_NodeBase(object):
             return False
             
     def move(self, target, pos=None):
-        raise NotImplementedError
+        raise NotImplementedError()
     
     @classmethod
     def get_first_root_node(cls):
@@ -212,26 +212,26 @@ class AL_NodeBase(object):
 
     @classmethod
     def load_bulk(cls, bulk_data, parent=None, keep_ids=False):
-        raise NotImplementedError
+        raise NotImplementedError()
         
     @classmethod
     def dump_bulk(cls, parent=None, keep_ids=True):
-        raise NotImplementedError
+        raise NotImplementedError()
     
     @classmethod
     def find_problems(cls):
         # e.g. cyclical graphs
-        raise NotImplementedError
+        raise NotImplementedError()
         
     @classmethod
     def fix_problems(cls):
-        raise NotImplementedError
+        raise NotImplementedError()
         
     @classmethod
     def get_descendants_group_count(parent=None):
         # Helper for a very common case: get a group of siblings and the 
         # number of descendants (not only children) in every sibling.
-        raise NotImplementedError
+        raise NotImplementedError()
 
 """
 Django's ORM is somewhat magical. We can't monkeypatch AL_Node
@@ -247,7 +247,7 @@ def node_factory(edge_model):
             
         parents = models.ManyToManyField('self', symmetrical=False, through=edge_model)
 
-        parent_field = '%s_parent' % edge_model.lower()
-        child_field = '%s_child' % edge_model.lower()
+        parent_field = '%s_parent' % edge_model.__class__.__name__.lower()
+        child_field = '%s_child' % edge_model.__class__.__name__.lower()
 
     return AL_Node
